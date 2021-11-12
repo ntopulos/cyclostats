@@ -1,0 +1,68 @@
+# http.yaml - development
+
+# TODO: make gzip work
+
+http:
+  routers:
+
+    webapp:
+      rule: "Host(`localhost`)"
+      service: webapp
+      entryPoints:
+        - webappEntry
+      middlewares:
+        - base
+
+    api:
+      rule: "Host(`localhost`)"
+      service: api
+      entryPoints:
+        - apiEntry
+      middlewares:
+        - base
+
+    grafana:
+      rule: "Host(`localhost`)"
+      service: grafana
+      entryPoints:
+        - grafanaEntry
+      middlewares:
+        - base
+
+
+  middlewares:
+
+    base:
+      chain:
+        middlewares:
+          - smaller
+          - cors
+          - hide-server
+
+    hide-server:
+      headers:
+        customResponseHeaders:
+          server: "generic"
+
+    smaller:
+      compress: {}
+
+    cors:
+      headers:
+        accessControlAllowOrigin: "*"
+        accessControlAllowHeaders:
+          - "content-type"
+
+  services:
+    webapp:
+      loadBalancer:
+        servers:
+        - url: "http://webapp"
+    api:
+      loadBalancer:
+        servers:
+        - url: "http://api:8000"
+    grafana:
+      loadBalancer:
+        servers:
+        - url: "http://grafana:3000"

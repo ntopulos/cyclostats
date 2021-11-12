@@ -1,0 +1,19 @@
+# traefik.yaml - development
+
+global:
+  sendAnonymousUsage: false
+
+api:
+  insecure: true
+
+entryPoints:
+  webappEntry:
+    address: :80
+  apiEntry:
+    address: :8000
+  grafanaEntry:
+    address: :3000
+
+providers:
+  file:
+    filename: /etc/traefik/http.yml

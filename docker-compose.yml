@@ -1,0 +1,45 @@
+version: '3.5'
+
+services:
+  traefik:
+    build:
+      context: ./docker/traefik
+    ports:
+      - "80:80"
+      - "8000:8000"
+      - "3000:3000"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  db:
+    build:
+      context: ./docker/postgres
+    volumes:
+      - cyclostats-db:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=cyclostats-development
+      - POSTGRES_USER=cyclostats
+      - POSTGRES_PASSWORD=secret
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    volumes:
+      - ./apps/api:/home/app
+    environment:
+      - FLASK_ENV=development
+  webapp:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - ./apps/webapp:/usr/share/nginx
+  grafana:
+    build:
+      context: ./docker/grafana
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+
+volumes:
+  cyclostats-db:
