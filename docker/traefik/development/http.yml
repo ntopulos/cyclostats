@@ -6,7 +6,7 @@ http:
   routers:
 
     webapp:
-      rule: "Host(`localhost`)"
+      rule: "HostRegexp(`{any:.*}`)"
       service: webapp
       entryPoints:
         - webappEntry
@@ -14,7 +14,7 @@ http:
         - base
 
     api:
-      rule: "Host(`localhost`)"
+      rule: "HostRegexp(`{any:.*}`)"
       service: api
       entryPoints:
         - apiEntry
@@ -22,7 +22,7 @@ http:
         - base
 
     grafana:
-      rule: "Host(`localhost`)"
+      rule: "HostRegexp(`{any:.*}`)"
       service: grafana
       entryPoints:
         - grafanaEntry
